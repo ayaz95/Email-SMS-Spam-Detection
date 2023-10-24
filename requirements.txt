@@ -88,6 +88,7 @@ fonttools==4.25.0
 frozenlist @ file:///opt/concourse/worker/volumes/live/b4c48fd3-7df7-4aa9-70fc-74aba3122503/volume/frozenlist_1637767148873/work
 fsspec @ file:///opt/conda/conda-bld/fsspec_1647268051896/work
 future @ file:///opt/concourse/worker/volumes/live/f456638c-86a7-4060-7f5f-d499a051219b/volume/future_1607571337593/work
+fuzzywuzzy==0.18.0
 gcloud==0.18.3
 gensim @ file:///opt/concourse/worker/volumes/live/01fcedc5-d7b4-4991-7b8d-28a2f2974568/volume/gensim_1646824946298/work
 gitdb==4.0.10
