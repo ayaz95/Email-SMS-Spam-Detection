@@ -43,7 +43,7 @@ model = pickle.load(open('modelFinal.pkl','rb'))
 st.header('Katch', divider='red')
 
 
-selected3 = option_menu(None, ["Home", "Spam Detection", "Identity Detection" ,"Dating Scam","Reporting", 'Team'], 
+selected3 = option_menu(None, ["Home", "Email-Spam Detection", "Identity Detection" ,"Dating Profile Identification","Reporting", 'Team'], 
     icons=['house', 'cloud-upload', "list-task","list-task",'gear'], 
     menu_icon="cast", default_index=0, orientation="horizontal",
     styles={
@@ -235,9 +235,9 @@ def dating_scam():
         if(max(data['average_score']) > 70):
             st.header("Suspicious Profile - Strong Match")
         if(max(data['average_score']) <= 70 and (max(data['average_score']) >= 60)):
-            st.header("Good Matched")
+            st.header("Good Match")
         if(max(data['average_score']) < 60 and (max(data['average_score']) >= 45)):
-            st.header("Possible Matched")
+            st.header("Possible Match")
         if(max(data['average_score']) < 45):
             st.header("No Match")
 
@@ -275,13 +275,13 @@ if selected3 == "Home":
     with col6:
         st.image("./Categories/Gaming.jpg")
 
-if selected3 == "Spam Detection":
+if selected3 == "Email-Spam Detection":
     scam_detection()
 
 if selected3 == "Identity Detection":
     identity_scam()
 
-if selected3 == "Dating Scam":
+if selected3 == "Dating Profile Identification":
     dating_scam()    
    
 if selected3 == "Reporting":
