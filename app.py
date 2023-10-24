@@ -8,6 +8,7 @@ import pandas as pd
 import plotly.express as px
 from streamlit_option_menu import option_menu
 from PIL import Image
+from fuzzywuzzy import fuzz
 
 ps = PorterStemmer()
 
@@ -42,8 +43,8 @@ model = pickle.load(open('modelFinal.pkl','rb'))
 st.header('Katch', divider='red')
 
 
-selected3 = option_menu(None, ["Home", "Spam Detection", "Identity Detection" ,"Reporting", 'Team'], 
-    icons=['house', 'cloud-upload', "list-task", 'gear'], 
+selected3 = option_menu(None, ["Home", "Spam Detection", "Identity Detection" ,"Dating Scam","Reporting", 'Team'], 
+    icons=['house', 'cloud-upload', "list-task","list-task",'gear'], 
     menu_icon="cast", default_index=0, orientation="horizontal",
     styles={
         "container": {"padding": "0!important", "background-color": "#fafafa"},
@@ -52,49 +53,13 @@ selected3 = option_menu(None, ["Home", "Spam Detection", "Identity Detection" ,"
         "nav-link-selected": {"background-color": "green"},
     })
 
-data = pd.DataFrame(columns=('Text', 'Classification', 'Attachment'))
 
-if selected3 == "Home":
-    st.image("./Categories/Katch.jpg")
-    # Define your content for each tile
-    
-    #st.markdown("<center><b><span style='font-size: 30px;'>Katch is the platform designed for the identification and prevention of fraudulent activities.<center><b><span style='font-size: 24px;'>")
-
-    #st.markdown("<center><span style='font-size: 20px;'>Katch is the platform designed for the identification and prevention of fraudulent activities.<center><span style='font-size: 20px;'>", unsafe_allow_html=True)
-
-
-    st.markdown("<center><b><span style='font-size: 30px;'>Targeted Industries<center><b><span style='font-size: 24px;'>", unsafe_allow_html=True)
-   
-    col1, col2, col3 = st.columns(3)
-
-    col4, col5, col6 = st.columns(3)
-
-    with col1:
-        st.image("./Categories/OnlineDating.jpg")
-
-    with col2:
-        st.image("./Categories/Investment.jpg")
-
-    with col3:
-        st.image("./Categories/Banking.jpg")
-
-    with col4:
-        st.image("./Categories/Restaurant.jpg")
-
-    with col5:
-        st.image("./Categories/Healthcare.jpg")
-
-    with col6:
-        st.image("./Categories/Gaming.jpg")
-
-if selected3 == "Spam Detection":
-
+def scam_detection():
+    data = pd.DataFrame(columns=('Text', 'Classification', 'Attachment'))
     st.title("Upload the csv file")
 
     #st.header('Single File Upload')
     uploaded_file = st.file_uploader('Upload a file', type = ['csv'])
-
-    
 
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, encoding='latin-1')
@@ -155,7 +120,8 @@ if selected3 == "Spam Detection":
     #fig1 = px.pie(count_data, values='Classification', names='Count', title='Spam in Pie')
 
 
-if selected3 == "Identity Detection":
+
+def identity_scam():
     tfidf = pickle.load(open('vectorizerIdentity.pkl','rb'))
     model = pickle.load(open('modelIdentity.pkl','rb'))
     st.title("Enter Identity Information")
@@ -184,7 +150,140 @@ if selected3 == "Identity Detection":
             st.header("Not Spam")
 
 
+def dating_scam():
+    st.title("Dating Profile Identity Scan")
 
+    firstName = st.text_input("Enter the First Name")
+
+    lastName  = st.text_input("Enter the Last Name")
+
+    age  = st.text_input("Enter the Age")
+
+    email  = st.text_input("Enter the Email address")
+
+    country  = st.text_input("Enter the Country Name")
+
+    # Load the CSV data
+    data = pd.read_csv('./Data/Dating_data.csv')
+
+    # User-provided text fields
+    user_texts = {
+        'user_first_name': firstName,
+        'user_last_name': lastName,
+        'user_age': age,
+        'user_email': email,
+        'user_country': country
+    }
+
+    # Initialize a dictionary to store the scores for each user-provided text field
+    matching_scores = {user_text: [] for user_text in user_texts}
+
+    # Columns in the CSV to compare (adjust these to match your columns)
+    csv_columns = {
+        'user_first_name': 'first_name',
+        'user_last_name': 'last_name',
+        'user_age': 'age',
+        'user_email': 'email',
+        'user_country': 'country'
+    }
+
+    # Initialize new columns for each user-provided text field to store the scores
+    for user_text in user_texts.keys():
+        data[user_text + '_score'] = 0
+
+    # Calculate the matching scores
+    for user_text, csv_column in user_texts.items():
+        for index, row in data.iterrows():
+            # Get the user-provided text and the corresponding CSV column value
+            user_value = user_texts[user_text]
+            csv_value = str(row[csv_columns[user_text]])
+
+            # Calculate the fuzzy string matching score between the user text and the CSV column value
+            score = fuzz.token_set_ratio(user_value, csv_value)
+
+            # Append the score to the corresponding user-provided text field
+            matching_scores[user_text].append(score)
+            data.at[index, user_text + '_score'] = score
+
+    # Calculate the average score for each record and add it as a new column
+    data['average_score'] = data[[user_text + '_score' for user_text in user_texts]].mean(axis=1)
+
+    def circular_tile(value):
+    # Apply CSS styling to create a circular tile
+        style = """
+        border-radius: 50%;
+        background-color: #3498db;
+        color: #fff;
+        text-align: center;
+        width: 150px;
+        height: 150px;
+        line-height: 150px;
+        font-size: 24px;
+        display: flex;
+        justify-content: center;
+    """
+    
+    # Display the circular tile
+        st.write(
+            f'<div style="{style}">{value}</div>',
+            unsafe_allow_html=True
+        )
+
+    if st.button('Get Matching Score'):
+        #st.header("Matching Score", max(data['average_score']))
+        circular_tile(max(data['average_score']))
+        if(max(data['average_score']) > 70):
+            st.header("Suspicious Profile - Strong Match")
+        if(max(data['average_score']) <= 70 and (max(data['average_score']) >= 60)):
+            st.header("Good Matched")
+        if(max(data['average_score']) < 60 and (max(data['average_score']) >= 45)):
+            st.header("Possible Matched")
+        if(max(data['average_score']) < 45):
+            st.header("No Match")
+
+
+if selected3 == "Home":
+    st.image("./Categories/Katch.jpg")
+    # Define your content for each tile
+    
+    #st.markdown("<center><b><span style='font-size: 30px;'>Katch is the platform designed for the identification and prevention of fraudulent activities.<center><b><span style='font-size: 24px;'>")
+
+    #st.markdown("<center><span style='font-size: 20px;'>Katch is the platform designed for the identification and prevention of fraudulent activities.<center><span style='font-size: 20px;'>", unsafe_allow_html=True)
+
+
+    st.markdown("<center><b><span style='font-size: 30px;'>Targeted Industries<center><b><span style='font-size: 24px;'>", unsafe_allow_html=True)
+   
+    col1, col2, col3 = st.columns(3)
+
+    col4, col5, col6 = st.columns(3)
+
+    with col1:
+        st.image("./Categories/OnlineDating.jpg")
+
+    with col2:
+        st.image("./Categories/Investment.jpg")
+
+    with col3:
+        st.image("./Categories/Banking.jpg")
+
+    with col4:
+        st.image("./Categories/Restaurant.jpg")
+
+    with col5:
+        st.image("./Categories/Healthcare.jpg")
+
+    with col6:
+        st.image("./Categories/Gaming.jpg")
+
+if selected3 == "Spam Detection":
+    scam_detection()
+
+if selected3 == "Identity Detection":
+    identity_scam()
+
+if selected3 == "Dating Scam":
+    dating_scam()    
+   
 if selected3 == "Reporting":
     scam_authorities = pd.read_csv("./Data/Scam_reporting_authorities_2020-22.csv")
     scam_age = pd.read_csv("./Data/Scam_exposure_by_age_2021-22.csv")
