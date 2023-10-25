@@ -43,8 +43,8 @@ model = pickle.load(open('modelFinal.pkl','rb'))
 st.header('Katch', divider='red')
 
 
-selected3 = option_menu(None, ["Home", "Email-Spam Detection", "Identity Detection" ,"Dating Profile Identification","Reporting", 'Team'], 
-    icons=['house', 'cloud-upload', "list-task","list-task",'gear'], 
+selected3 = option_menu(None, ["Home", "Identity Detection", "Banking Usecase", "SMS Usecase" ,"Dating Usecase","Reporting", 'Team'], 
+    icons=['house', 'cloud-upload', "list-task", "list-task","list-task",'gear'], 
     menu_icon="cast", default_index=0, orientation="horizontal",
     styles={
         "container": {"padding": "0!important", "background-color": "#fafafa"},
@@ -53,7 +53,97 @@ selected3 = option_menu(None, ["Home", "Email-Spam Detection", "Identity Detecti
         "nav-link-selected": {"background-color": "green"},
     })
 
+def detect_scammer():
+    
+    st.title("Scammers Search Engine")
+    my_list = st.text_input("Enter the details in comma separated format (FirstName, LastName, Age, Email, Country) and press enter")
+    if(len(my_list)!=0):
+        analysis(my_list)
 
+def analysis(my_list):
+    
+    my_list = my_list.split(',')
+
+    data = pd.read_csv('./Data/Categorised_data.csv')
+
+    user_texts = {
+    'user_first_name': my_list[0],
+    'user_last_name': my_list[1],
+    'user_age': my_list[2],
+    'user_email': my_list[3],
+    'user_country': my_list[4]
+        }
+
+    matching_scores = {user_text: [] for user_text in user_texts}
+
+        # Columns in the CSV to compare (adjust these to match your columns)
+    csv_columns = {
+            'user_first_name': 'first_name',
+            'user_last_name': 'last_name',
+            'user_age': 'age',
+            'user_email': 'email',
+            'user_country': 'country'
+        }
+
+        # Initialize new columns for each user-provided text field to store the scores
+    # Initialize new columns for each user-provided text field to store the scores
+    for user_text in user_texts.keys():
+        data[user_text + '_score'] = 0
+
+    # Calculate the matching scores
+    for user_text, csv_column in user_texts.items():
+        for index, row in data.iterrows():
+            # Get the user-provided text and the corresponding CSV column value
+            user_value = user_texts[user_text]
+            csv_value = str(row[csv_columns[user_text]])
+
+            # Calculate the fuzzy string matching score between the user text and the CSV column value
+            score = fuzz.token_set_ratio(user_value, csv_value)
+
+        # Append the score to the corresponding user-provided text field
+        matching_scores[user_text].append(score)
+        data.at[index, user_text + '_score'] = score
+
+        # Calculate the average score for each record and add it as a new column
+    data['average_score'] = data[[user_text + '_score' for user_text in user_texts]].mean(axis=1)
+
+        # Save the updated data with scores and the average score to a new CSV file
+    
+        # Fetch the entire record for the column with the highest average score
+    highest_avg_score_index = data['average_score'].idxmax()
+    highest_avg_score = data.iloc[highest_avg_score_index]['average_score']
+    category = data.iloc[highest_avg_score_index]['Category']
+
+    if st.button('Search'):
+        #st.header("Matching Score", max(data['average_score']))
+        if(highest_avg_score > 70):
+            status = "Suspicious Profile - Strong Match"
+            table_data = {
+            'Matching Score':highest_avg_score
+             , 'Status':status
+             , 'Domain':category}
+            st.table(table_data)
+        if((highest_avg_score <= 70) and (highest_avg_score >= 60)):
+            status = "Good Match"
+            table_data = {
+            'Matching Score':highest_avg_score
+             , 'Status':status
+             , 'Domain':category}
+            st.table(table_data)
+        if((highest_avg_score < 60) and (highest_avg_score >= 45)):
+            status = "Possible Match"
+            table_data = {
+            'Matching Score':highest_avg_score
+             , 'Status':status
+             , 'Domain':category}
+            st.table(table_data)
+        if(highest_avg_score < 45):
+            status = "No Match"
+            table_data = {
+            'Matching Score':highest_avg_score
+             , 'Status':status}
+            st.table(table_data)
+ 
 def scam_detection():
     data = pd.DataFrame(columns=('Text', 'Classification', 'Attachment'))
     st.title("Upload the csv file")
@@ -112,14 +202,6 @@ def scam_detection():
     # Create a bar chart using Plotly Express
     st.plotly_chart(px.bar(count_data, x="Classification", y="Count", title="Category Count"))
 
-    # st.title("Malicious attachments")
-    # spam_count_data = spam_data.groupby("Attachment").size().reset_index(name="Count")
-    # print(spam_count_data)
-    #st.plotly_chart(px.pie(spam_count_data, values=spam_data["Attachment"].value_counts(), names=spam_data["Attachment"].value_counts().index, title="Malcious attachments Count"))
-
-    #fig1 = px.pie(count_data, values='Classification', names='Count', title='Spam in Pie')
-
-
 
 def identity_scam():
     tfidf = pickle.load(open('vectorizerIdentity.pkl','rb'))
@@ -129,8 +211,6 @@ def identity_scam():
     Email_Address = st.text_input("Enter the email address")
 
     Phone_Number = st.text_input("Enter phone number")
-
-    #st.title("Email/SMS Spam Classifier")
 
     input_sms = st.text_area("Enter the message")
 
@@ -275,13 +355,16 @@ if selected3 == "Home":
     with col6:
         st.image("./Categories/Gaming.jpg")
 
-if selected3 == "Email-Spam Detection":
+if selected3 == "Banking Usecase":
     scam_detection()
 
 if selected3 == "Identity Detection":
+    detect_scammer()
+
+if selected3 == "SMS Usecase":
     identity_scam()
 
-if selected3 == "Dating Profile Identification":
+if selected3 == "Dating Usecase":
     dating_scam()    
    
 if selected3 == "Reporting":
