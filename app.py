@@ -43,7 +43,7 @@ model = pickle.load(open('modelFinal.pkl','rb'))
 st.header('Katch', divider='red')
 
 
-selected3 = option_menu(None, ["Home", "Identity Detection", "Banking Usecase", "SMS Usecase" ,"Dating Usecase","Reporting", 'Team'], 
+selected3 = option_menu(None, ["Home", "Identity Detection", "Banking Usecase", "Text Scam" ,"Dating Usecase","Reporting", 'Team'], 
     icons=['house', 'cloud-upload', "list-task", "list-task","list-task",'gear'], 
     menu_icon="cast", default_index=0, orientation="horizontal",
     styles={
@@ -361,7 +361,7 @@ if selected3 == "Banking Usecase":
 if selected3 == "Identity Detection":
     detect_scammer()
 
-if selected3 == "SMS Usecase":
+if selected3 == "Text Scam":
     identity_scam()
 
 if selected3 == "Dating Usecase":
