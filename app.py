@@ -37,8 +37,8 @@ def transform_text(text):
 
     return " ".join(y)
 
-tfidf = pickle.load(open('vectorizer.pkl','rb'))
-model = pickle.load(open('modelFinal.pkl','rb'))
+tfidf = pickle.load(open('vectorizerUpdated.pkl','rb'))
+model = pickle.load(open('modelUpdated.pkl','rb'))
 
 st.header('Katch', divider='red')
 
@@ -176,15 +176,15 @@ def scam_detection():
                     data = data.append(new_row, ignore_index=True)
 
                 elif result == 3:
-                    new_row = {'Text':row['text'], 'Classification':'Positive Customer Review', 'Attachment':row['Attachment']}
+                    new_row = {'Text':row['text'], 'Classification':'Positive Customer Review'}#, 'Attachment':row['Attachment']}
                     data = data.append(new_row, ignore_index=True)
 
                 elif result == 4:
-                    new_row = {'Text':row['text'], 'Classification':'Spam', 'Attachment':row['Attachment']}
+                    new_row = {'Text':row['text'], 'Classification':'Spam'}#, 'Attachment':row['Attachment']}
                     data = data.append(new_row, ignore_index=True)
 
                 else:
-                    new_row = {'Text':row['text'], 'Classification':'Usage Issue', 'Attachment':row['Attachment']}
+                    new_row = {'Text':row['text'], 'Classification':'Usage Issue'}#, 'Attachment':row['Attachment']}
                     data = data.append(new_row, ignore_index=True)
                     #st.header("Not Spam")
     # def initialize_session_state():
