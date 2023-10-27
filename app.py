@@ -58,7 +58,10 @@ def detect_scammer():
     st.title("Scammers Search Engine")
     my_list = st.text_input("Enter the details in comma separated format (FirstName, LastName, Age, Email, Country) and press enter")
     if(len(my_list)!=0):
-        analysis(my_list)
+        try:
+            analysis(my_list)
+        except:
+            st.error("Error: Please check the provided input")
 
 def analysis(my_list):
     
