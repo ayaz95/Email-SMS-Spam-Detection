@@ -37,7 +37,7 @@ Operator can install the above pcakages from requirement.txt file
 
 ## AI and Machine Learning Models Usage
 
-- `Multinomial Naive Bayes classification Machine Learning models`
+## `Multinomial Naive Bayes classification Machine Learning models`
 
 Katch platform is using a `Multinomial Naive Bayes classification Machine Learning model`(field of natural language processing and text classification) to detect whether emails and texts provided by the users falls under which category. 
 
@@ -103,13 +103,13 @@ A threshold is set to classify emails based on these probability scores.
 Deploy the trained model into a production environment using pickle library and call the trained model while testing the dataset.
 
 
-## Reason to use Multinomial Naive Bayes Classifier 
+`Reason to use Multinomial Naive Bayes Classifier` 
 
 Multinomial Naive Bayes is a popular choice for email spam detection because it's relatively simple, efficient, and performs well on text classification tasks. 
 However, it's important to note that no model is perfect, and regular updates and monitoring are essential to maintain the accuracy of the spam detection system.
 
 
--- `Fuzzy Logic Matching Algorithm`
+## `Fuzzy Logic Matching Algorithm`
 
 Our app uses FuzzyWuzzy python library. This library contains `fuzz.token_set_ratio` function which is commonly used for fuzzy string matching and similarity comparison. 
 It uses a combination of several text comparison techniques to calculate a similarity score between two strings. The primary techniques involved in the token_set_ratio method include:
