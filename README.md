@@ -1,30 +1,11 @@
 # Katch - Your Shield Against Fraud
 
-## Table of Contents
-
-- [About](#about)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-
 ##About 
-
-Katch is a Cloud based platform used to find whether particular individual is a fraudster or not using our AI and Machine Learning models
-
-##Getting Started
-
-##
-
 Katch is an innovative solution that leverages the power of cloud-based Machine Learning (ML) to provide a comprehensive and dynamic defense against fraudulent activities. 
 This platform is designed to detect, prevent, and mitigate various types of scams and to identify potential scammers. 
 
 
 ## Project Structure
-
 - `data/`: Contains the datasets.
 - `Team/`: Team photos.
 - `Machine Learning Model Files` - Email_Scam_Code.ipynb, Fuzzy_Logic_Code.ipynb, and Identity_Code.ipnb
@@ -32,8 +13,6 @@ This platform is designed to detect, prevent, and mitigate various types of scam
 - `README.md`: This file.
 
 ## Dataset
-
-Describe the dataset used for your project. Include information on the source of the data, the format, and any data preprocessing steps. You can also provide a download link if the dataset is publicly available.
 - `Categorised_data.csv` - This file contains scammers information like Names, Age, Gender, Country, etc used to calculate the fuzzy logic matching score
 - `Exposure_Rate_by_scam_type_2020-22.csv` - This file contains information related to types of scams happened from 2020-2022
 - `Scam_exposure_by_age_2021-22.csv` - This file contains the information related to scam exposure by age
@@ -43,9 +22,6 @@ Describe the dataset used for your project. Include information on the source of
 - `Dating_data.csv` - This file is also contains information related to scammers who specifically have done dating scams in the past.
 
 ## Requirements
-
-List the software, libraries, and dependencies required to run your project. For example:
-
 - Python 3.x
 - nltk
 - NumPy
@@ -54,17 +30,16 @@ List the software, libraries, and dependencies required to run your project. For
 - pickle
 - fuzzywuzzy
 
-  Already installed all the above packages in requirement.txt file
+Operator can install the above pcakages from requirement.txt file
 
 ## Install required packages:
-
 - pip install -r requirements.txt
 
-## Usage
+## AI and Machine Learning Models Usage
 
-`Machine Learning model`
+- `Multinomial Naive Bayes classification Machine Learning models`
 
-Katch platform is using a Multinomial Naive Bayes classification Machine Learning model(field of natural language processing and text classification) to detect whether emails and texts provided by the users falls under which category. 
+Katch platform is using a `Multinomial Naive Bayes classification Machine Learning model`(field of natural language processing and text classification) to detect whether emails and texts provided by the users falls under which category. 
 
 Here's a detailed explanation of how this process works:
 
@@ -134,5 +109,29 @@ Multinomial Naive Bayes is a popular choice for email spam detection because it'
 However, it's important to note that no model is perfect, and regular updates and monitoring are essential to maintain the accuracy of the spam detection system.
 
 
+-- `Fuzzy Logic Matching Algorithm`
 
+Our app uses FuzzyWuzzy python library. This library contains `fuzz.token_set_ratio` function which is commonly used for fuzzy string matching and similarity comparison. 
+It uses a combination of several text comparison techniques to calculate a similarity score between two strings. The primary techniques involved in the token_set_ratio method include:
+
+`Tokenization`: The input strings are tokenized into individual words or terms. Tokenization is a fundamental step in text processing, allowing the algorithm to work with individual units of text.
+
+`Set Operations`: The algorithm performs set operations on the tokens. Specifically, it computes the intersection and union of the token sets from the two input strings.
+
+`Levenshtein Distance (Edit Distance)`: For the common tokens (intersection), the algorithm calculates the Levenshtein distance or edit distance. This distance metric measures the minimum number of insertions, deletions, and substitutions required to transform one string into another.
+
+`Scoring`: The algorithm assigns a similarity score based on the Levenshtein distance and the sizes of the intersection and union of the token sets. The exact scoring method used by FuzzyWuzzy may vary but often involves weighted combinations of these factors.
+
+The token_set_ratio method, in particular, focuses on a "token set" approach, where it considers the set of tokens common to both strings and their variations. This approach is especially useful for cases where the input strings may have some differences, and you want to measure their similarity while allowing for some token variation or reordering.
+
+Overall, fuzz.token_set_ratio provides a similarity score that quantifies the likeness of two strings, considering token overlap and character-level differences, and is often used for tasks like fuzzy string matching and deduplication. It is a versatile tool for applications where approximate matching or similarity comparison is required.
+
+
+## Acknowledgements 
+
+- Thanks to Equifax for providing this opportunity to participate in DevJam
+- Kaggle for open source datasets - (https://www.kaggle.com/datasets/venky73/spam-mails-dataset/ , https://www.kaggle.com/datasets/darpan25bajaj/bank-reviewcomplaint-analysis)
+- Hugging face for dataset - https://huggingface.co/datasets/consumer-finance-complaints
+- Australian Bureau of Statistics - https://www.abs.gov.au/statistics/people/crime-and-justice/personal-fraud/latest-release#scams
+- Cybersentinel Team Members
 
