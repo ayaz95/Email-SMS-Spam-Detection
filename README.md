@@ -1,6 +1,6 @@
 # Katch - Your Shield Against Fraud
 
-##About 
+## About 
 Katch is an innovative solution that leverages the power of cloud-based Machine Learning (ML) to provide a comprehensive and dynamic defense against fraudulent activities. 
 This platform is designed to detect, prevent, and mitigate various types of scams and to identify potential scammers. 
 
